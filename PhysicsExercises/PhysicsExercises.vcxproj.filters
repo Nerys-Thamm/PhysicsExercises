@@ -18,5 +18,13 @@
     <ClCompile Include="PhysicsExercises.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CVector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CVector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
