@@ -61,22 +61,24 @@ PlanePosition PointPlaneTest()
 	stream >> planepos.x;
 	stream >> planepos.y;
 	stream >> planepos.z;
-	stream.clear();
+	
 	std::cout << "Please enter plane normal in format x y z" << std::endl;
 	temp = "";
+	std::cin.clear();
 	std::getline(std::cin, temp);
-	stream << temp;
-	stream >> planenormal .x;
-	stream >> planenormal.y;
-	stream >> planenormal.z;
-	stream.clear();
+	std::stringstream sstream(temp);
+	sstream >> planenormal.x;
+	sstream >> planenormal.y;
+	sstream >> planenormal.z;
+	sstream.clear();
 	std::cout << "Please enter point position in format x y z" << std::endl;
 	temp = "";
+	std::cin.clear();
 	std::getline(std::cin, temp);
-	stream << temp;
-	stream >> pointpos.x;
-	stream >> pointpos.y;
-	stream >> pointpos.z;
+	std::stringstream ssstream(temp); stream << temp;
+	ssstream >> pointpos.x;
+	ssstream >> pointpos.y;
+	ssstream >> pointpos.z;
 
 	if (CVector::Dot(planepos - pointpos, planenormal) == 0)
 	{
