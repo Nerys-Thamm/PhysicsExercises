@@ -20,7 +20,7 @@ CVector::Vector3 CVector::CrossProduct(Vector3 _a, Vector3 _b)
 {
 	Vector3 product;
 	product.x = _a.y * _b.z - _a.z * _b.y;
-	product.y = _a.x * _b.z - _a.z * _b.x;
+	product.y = _a.z * _b.x - _a.x * _b.z;
 	product.z = _a.x * _b.y - _a.y * _b.x;
 	return product;
 }

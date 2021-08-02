@@ -4,6 +4,7 @@
 #include <iostream>
 #include "CVector.h"
 #include <vector>
+#include <sstream>
 
 void LagrangeTest()
 {
@@ -39,10 +40,72 @@ void LagrangeTest()
 	}
 }
 
+enum PlanePosition
+{
+	ON_PLANE,
+	INFRONT,
+	BEHIND,
+};
+
+
+
+PlanePosition PointPlaneTest()
+{
+	CVector::Vector3 planepos;
+	CVector::Vector3 planenormal;
+	CVector::Vector3 pointpos;
+	std::string temp;
+	std::cout << "Please enter plane position in format x y z" << std::endl;
+	std::getline(std::cin, temp);
+	std::stringstream stream(temp);
+	stream >> planepos.x;
+	stream >> planepos.y;
+	stream >> planepos.z;
+	stream.clear();
+	std::cout << "Please enter plane normal in format x y z" << std::endl;
+	temp = "";
+	std::getline(std::cin, temp);
+	stream << temp;
+	stream >> planenormal .x;
+	stream >> planenormal.y;
+	stream >> planenormal.z;
+	stream.clear();
+	std::cout << "Please enter point position in format x y z" << std::endl;
+	temp = "";
+	std::getline(std::cin, temp);
+	stream << temp;
+	stream >> pointpos.x;
+	stream >> pointpos.y;
+	stream >> pointpos.z;
+
+	if (CVector::Dot(planepos - pointpos, planenormal) == 0)
+	{
+		std::cout << "ON_PLANE" << std::endl;
+		return PlanePosition::ON_PLANE;
+		
+	}
+	else if (CVector::Dot(planepos - pointpos, planenormal) < 0)
+	{
+		std::cout << "BEHIND" << std::endl;
+		return PlanePosition::BEHIND;
+		
+	}
+	else
+	{
+		std::cout << "INFRONT" << std::endl;
+		return PlanePosition::INFRONT;
+		
+	}
+
+
+
+}
+
 int main()
 {
 
-	LagrangeTest();
+	//LagrangeTest();
+	PointPlaneTest();
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
