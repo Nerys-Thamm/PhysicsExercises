@@ -1,0 +1,12 @@
+[
+{
+  "directory": "/home/neryst/Documents/Repos/PhysicsExercises/PhysicsExercises/build",
+  "command": "/usr/bin/c++   -g -o CMakeFiles/PhysicsExercises.dir/PhysicsExercises.cpp.o -c /home/neryst/Documents/Repos/PhysicsExercises/PhysicsExercises/PhysicsExercises.cpp",
+  "file": "/home/neryst/Documents/Repos/PhysicsExercises/PhysicsExercises/PhysicsExercises.cpp"
+},
+{
+  "directory": "/home/neryst/Documents/Repos/PhysicsExercises/PhysicsExercises/build",
+  "command": "/usr/bin/c++   -g -o CMakeFiles/PhysicsExercises.dir/CVector.cpp.o -c /home/neryst/Documents/Repos/PhysicsExercises/PhysicsExercises/CVector.cpp",
+  "file": "/home/neryst/Documents/Repos/PhysicsExercises/PhysicsExercises/CVector.cpp"
+}
+]

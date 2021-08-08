@@ -8,9 +8,9 @@
 
 void LagrangeTest()
 {
-	std::vector<CVector::Vector3> Aexamples = { CVector::Vector3{1.0f,2.0f,3.0f} };
-	std::vector<CVector::Vector3> Bexamples = { CVector::Vector3{2.0f,3.0f,1.0f} };
-	std::vector<CVector::Vector3> Cexamples = { CVector::Vector3{3.0f,1.0f,2.0f} };
+	std::vector<CVector::Vector3> Aexamples = {CVector::Vector3{1.0f, 2.0f, 3.0f}};
+	std::vector<CVector::Vector3> Bexamples = {CVector::Vector3{2.0f, 3.0f, 1.0f}};
+	std::vector<CVector::Vector3> Cexamples = {CVector::Vector3{3.0f, 1.0f, 2.0f}};
 
 	if (Aexamples.size() != Bexamples.size() || Bexamples.size() != Cexamples.size())
 	{
@@ -33,10 +33,6 @@ void LagrangeTest()
 		CVector::Vector3 rhs = (Bexamples[i] * CVector::Dot(Aexamples[i], Cexamples[i])) - (Cexamples[i] * CVector::Dot(Aexamples[i], Bexamples[i]));
 
 		std::cout << "(A DOT C)B -(A DOT B)C = " << CVector::Stringify(rhs) << std::endl;
-
-
-
-		system("pause");
 	}
 }
 
@@ -46,8 +42,6 @@ enum PlanePosition
 	INFRONT,
 	BEHIND,
 };
-
-
 
 PlanePosition PointPlaneTest()
 {
@@ -61,7 +55,7 @@ PlanePosition PointPlaneTest()
 	stream >> planepos.x;
 	stream >> planepos.y;
 	stream >> planepos.z;
-	
+
 	std::cout << "Please enter plane normal in format x y z" << std::endl;
 	temp = "";
 	std::cin.clear();
@@ -75,7 +69,8 @@ PlanePosition PointPlaneTest()
 	temp = "";
 	std::cin.clear();
 	std::getline(std::cin, temp);
-	std::stringstream ssstream(temp); stream << temp;
+	std::stringstream ssstream(temp);
+	stream << temp;
 	ssstream >> pointpos.x;
 	ssstream >> pointpos.y;
 	ssstream >> pointpos.z;
@@ -84,23 +79,17 @@ PlanePosition PointPlaneTest()
 	{
 		std::cout << "ON_PLANE" << std::endl;
 		return PlanePosition::ON_PLANE;
-		
 	}
-	else if (CVector::Dot(planepos - pointpos, planenormal) < 0)
+	else if (CVector::Dot(planepos - pointpos, planenormal) > 0)
 	{
 		std::cout << "BEHIND" << std::endl;
 		return PlanePosition::BEHIND;
-		
 	}
 	else
 	{
 		std::cout << "INFRONT" << std::endl;
 		return PlanePosition::INFRONT;
-		
 	}
-
-
-
 }
 
 int main()
@@ -113,7 +102,7 @@ int main()
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
 // Debug program: F5 or Debug > Start Debugging menu
 
-// Tips for Getting Started: 
+// Tips for Getting Started:
 //   1. Use the Solution Explorer window to add/manage files
 //   2. Use the Team Explorer window to connect to source control
 //   3. Use the Output window to see build output and other messages

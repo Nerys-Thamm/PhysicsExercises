@@ -1,0 +1,1 @@
+/usr/bin/c++ -g -rdynamic CMakeFiles/PhysicsExercises.dir/PhysicsExercises.cpp.o CMakeFiles/PhysicsExercises.dir/CVector.cpp.o -o PhysicsExercises 
