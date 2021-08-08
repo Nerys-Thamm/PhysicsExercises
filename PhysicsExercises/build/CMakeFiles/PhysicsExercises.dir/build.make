@@ -108,6 +108,10 @@ PhysicsExercises_EXTERNAL_OBJECTS =
 PhysicsExercises: CMakeFiles/PhysicsExercises.dir/PhysicsExercises.cpp.o
 PhysicsExercises: CMakeFiles/PhysicsExercises.dir/CVector.cpp.o
 PhysicsExercises: CMakeFiles/PhysicsExercises.dir/build.make
+PhysicsExercises: /usr/lib/libsfml-audio.so.2.5.1
+PhysicsExercises: /usr/lib/libsfml-graphics.so.2.5.1
+PhysicsExercises: /usr/lib/libsfml-window.so.2.5.1
+PhysicsExercises: /usr/lib/libsfml-system.so.2.5.1
 PhysicsExercises: CMakeFiles/PhysicsExercises.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/neryst/Documents/Repos/PhysicsExercises/PhysicsExercises/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable PhysicsExercises"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/PhysicsExercises.dir/link.txt --verbose=$(VERBOSE)

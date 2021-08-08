@@ -308,6 +308,12 @@ PhysicsExercises_IS_TOP_LEVEL:STATIC=ON
 //Value Computed by CMake
 PhysicsExercises_SOURCE_DIR:STATIC=/home/neryst/Documents/Repos/PhysicsExercises/PhysicsExercises
 
+//The directory containing a CMake configuration file for SFML.
+SFML_DIR:PATH=/usr/lib64/cmake/SFML
+
+//Path to a file.
+SFML_DOC_DIR:PATH=SFML_DOC_DIR-NOTFOUND
+
 //Name of the computer/site where compile is being run
 SITE:STRING=Nerys-Workstation
 

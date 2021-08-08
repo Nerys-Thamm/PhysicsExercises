@@ -5,6 +5,11 @@
 #include "CVector.h"
 #include <vector>
 #include <sstream>
+#include <SFML/System.hpp>
+#include <SFML/Window.hpp>
+#include <SFML/Graphics.hpp>
+#include <SFML/Network.hpp>
+#include <SFML/Audio.hpp>
 
 void LagrangeTest()
 {
@@ -112,6 +117,20 @@ PlanePosition PointPlaneTest(CVector::Vector3 _planepos, CVector::Vector3 _plane
 	}
 }
 
+CVector::Vector3 InputVector3(std::string _prompttext)
+{
+	CVector::Vector3 output;
+	std::cout << _prompttext << "[In format x y z (seperated by spaces)]:" << std::endl;
+	std::string temp;
+	std::cin.clear();
+	std::getline(std::cin, temp);
+	std::stringstream stream(temp);
+	stream >> output.x;
+	stream >> output.y;
+	stream >> output.z;
+	return output;
+}
+
 bool LinePlaneTest()
 {
 	CVector::Vector3 planepos;
@@ -199,13 +218,144 @@ bool LinePlaneTest(CVector::Vector3 _planepos, CVector::Vector3 _planenormal, CV
 	return false;
 }
 
+bool TriPlaneTest(CVector::Vector3 _planepos, CVector::Vector3 _planenormal, CVector::Vector3 _firstpointpos, CVector::Vector3 _secondpointpos, CVector::Vector3 _thirdpointpos)
+{
+	bool intersects = (!LinePlaneTest(_planepos, _planenormal, _firstpointpos, _secondpointpos) && !LinePlaneTest(_planepos, _planenormal, _firstpointpos, _thirdpointpos) && !LinePlaneTest(_planepos, _planenormal, _thirdpointpos, _secondpointpos));
+	return intersects;
+}
+
+sf::VertexArray MakeTriangle(sf::Vector2f PointA, sf::Vector2f PointB, sf::Vector2f PointC, sf::Color Color)
+{
+	// create an array of 3 vertices that define a triangle primitive
+	sf::VertexArray triangle(sf::Triangles, 3);
+
+	// define the position of the triangle's points
+	triangle[0].position = PointA;
+	triangle[1].position = PointB;
+	triangle[2].position = PointC;
+
+	// define the color of the triangle's points
+	triangle[0].color = Color;
+	triangle[1].color = Color;
+	triangle[2].color = Color;
+
+	return triangle;
+}
+
+enum PlacementState
+{
+	NONE,
+	PLACINGTRI,
+	PLACINGLINE
+};
+
+void TriCutter()
+{
+	//window
+	sf::RenderWindow window(sf::VideoMode(960, 1080), "Nerys Thamm Triangle Cutter");
+	window.setFramerateLimit(60);
+
+	std::vector<sf::VertexArray> Triangles;
+	std::vector<sf::Vector2i> ClickBuffer;
+
+	while (window.isOpen())
+	{
+
+		window.clear();
+
+		sf::Event event;
+		while (window.pollEvent(event))
+		{
+			if (event.type == sf::Event::Closed)
+				window.close();
+			switch (event.type)
+			{
+			case sf::Event::MouseButtonPressed:
+				ClickBuffer.push_back(sf::Mouse::getPosition());
+				if (ClickBuffer.size() == 3 && Triangles.size() == 0)
+				{
+					Triangles.push_back(MakeTriangle((sf::Vector2f)ClickBuffer[0], (sf::Vector2f)ClickBuffer[1], (sf::Vector2f)ClickBuffer[2], sf::Color::Red));
+					ClickBuffer.clear();
+				}
+				else if (Triangles.size() > 0 && ClickBuffer.size() == 2)
+				{
+					ClickBuffer.clear();
+				}
+				else if (ClickBuffer.size() > 2)
+				{
+					ClickBuffer.clear();
+				}
+
+				break;
+
+			default:
+				break;
+			}
+		}
+		window.clear();
+		for (int i = 0; i < Triangles.size(); i++)
+		{
+			window.draw(Triangles[i]);
+		}
+
+		window.display();
+	}
+
+	return;
+}
+
 int main()
 {
+	bool running = true;
+	do
+	{
+#if _WIN32 || _WIN64
+		system("cls");
+#else
+		system("clear");
+#endif
+
+		std::string input;
+		std::cout << "Please input the Exercise number you would like to run\nAvailable Exercises are:\n[001.1] [001.2] [001.3] [001.4] [001.5]\nOr input [exit] to Close the program:" << std::endl;
+		std::cin >> input;
+		if (input == "exit")
+		{
+			running = false;
+			break;
+		}
+		else if (input == "001.1")
+		{
+			LagrangeTest();
+		}
+		else if (input == "001.2")
+		{
+		}
+		else if (input == "001.3")
+		{
+		}
+		else if (input == "001.4")
+		{
+			bool result = TriPlaneTest(InputVector3("Plane Position"), InputVector3("Plane Normal"), InputVector3("First point position"), InputVector3("Second point position"), InputVector3("Third point position"));
+			std::cout << (result ? "The Triangle intersects the plane" : "The Triangle does not intersect the plane") << std::endl;
+		}
+		else if (input == "001.5")
+		{
+			TriCutter();
+		}
+		else
+		{
+			std::cout << "Invalid input, please try again!" << std::endl;
+		}
+		std::cout << "Input anything to continue..." << std::endl;
+		std::string temp;
+		std::cin >> temp;
+
+	} while (running);
 
 	//LagrangeTest();
 	//PointPlaneTest();
-	std::cout << std::endl
-			  << LinePlaneTest();
+	//std::cout << std::endl
+	//		  << LinePlaneTest();
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
