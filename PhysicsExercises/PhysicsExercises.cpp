@@ -92,11 +92,120 @@ PlanePosition PointPlaneTest()
 	}
 }
 
+PlanePosition PointPlaneTest(CVector::Vector3 _planepos, CVector::Vector3 _planenormal, CVector::Vector3 _pointpos)
+{
+
+	if (CVector::Dot(_planepos - _pointpos, _planenormal) == 0)
+	{
+		std::cout << "ON_PLANE" << std::endl;
+		return PlanePosition::ON_PLANE;
+	}
+	else if (CVector::Dot(_planepos - _pointpos, _planenormal) > 0)
+	{
+		std::cout << "BEHIND" << std::endl;
+		return PlanePosition::BEHIND;
+	}
+	else
+	{
+		std::cout << "INFRONT" << std::endl;
+		return PlanePosition::INFRONT;
+	}
+}
+
+bool LinePlaneTest()
+{
+	CVector::Vector3 planepos;
+	CVector::Vector3 planenormal;
+	CVector::Vector3 firstpointpos;
+	CVector::Vector3 secondpointpos;
+	std::string temp;
+	std::cout << "Please enter plane position in format x y z" << std::endl;
+	std::getline(std::cin, temp);
+	std::stringstream stream(temp);
+	stream >> planepos.x;
+	stream >> planepos.y;
+	stream >> planepos.z;
+
+	std::cout << "Please enter plane normal in format x y z" << std::endl;
+	temp = "";
+	std::cin.clear();
+	std::getline(std::cin, temp);
+	std::stringstream sstream(temp);
+	sstream >> planenormal.x;
+	sstream >> planenormal.y;
+	sstream >> planenormal.z;
+	sstream.clear();
+	std::cout << "Please enter first point position of line in format x y z" << std::endl;
+	temp = "";
+	std::cin.clear();
+	std::getline(std::cin, temp);
+	std::stringstream ssstream(temp);
+	stream << temp;
+	ssstream >> firstpointpos.x;
+	ssstream >> firstpointpos.y;
+	ssstream >> firstpointpos.z;
+	std::cout << "Please enter first point position of line in format x y z" << std::endl;
+	temp = "";
+	std::cin.clear();
+	std::getline(std::cin, temp);
+	std::stringstream sssstream(temp);
+	stream << temp;
+	sssstream >> secondpointpos.x;
+	sssstream >> secondpointpos.y;
+	sssstream >> secondpointpos.z;
+
+	CVector::Vector3 line = firstpointpos - secondpointpos;
+
+	float d = CVector::Dot((planepos - firstpointpos), planenormal) / CVector::Dot(line, planenormal);
+
+	if (!CVector::Dot(planenormal, line))
+	{
+		return false;
+	}
+
+	CVector::Vector3 p = firstpointpos + (line * d);
+
+	float x = CVector::Dot(secondpointpos - firstpointpos, p - firstpointpos);
+
+	if (x > 0 && x < (CVector::Magnitude(line) * CVector::Magnitude(line)))
+	{
+		return true;
+	}
+
+	return false;
+}
+
+bool LinePlaneTest(CVector::Vector3 _planepos, CVector::Vector3 _planenormal, CVector::Vector3 _firstpointpos, CVector::Vector3 _secondpointpos)
+{
+
+	CVector::Vector3 line = _firstpointpos - _secondpointpos;
+
+	float d = CVector::Dot((_planepos - _firstpointpos), _planenormal) / CVector::Dot(line, _planenormal);
+
+	if (!CVector::Dot(_planenormal, line))
+	{
+		return false;
+	}
+
+	CVector::Vector3 p = _firstpointpos + (line * d);
+
+	float x = CVector::Dot(_secondpointpos - _firstpointpos, p - _firstpointpos);
+
+	if (x > 0 && x < (CVector::Magnitude(line) * CVector::Magnitude(line)))
+	{
+		return true;
+	}
+
+	return false;
+}
+
 int main()
 {
 
 	//LagrangeTest();
-	PointPlaneTest();
+	//PointPlaneTest();
+	std::cout << std::endl
+			  << LinePlaneTest();
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
