@@ -289,6 +289,8 @@ void TriCutter()
 	sf::VertexArray CachedTri;				//Cached triangle to restore on key press
 	std::vector<sf::Vector2i> ClickBuffer;	//Buffer of click input positions
 
+	sf::Vertex line[3];
+
 	//program loop
 	while (window.isOpen())
 	{
@@ -401,9 +403,25 @@ void TriCutter()
 		}
 		//RENDER
 		window.clear();
+
 		for (int i = 0; i < Triangles.size(); i++)
 		{
 			window.draw(Triangles[i]);
+		}
+
+		if (ClickBuffer.size() == 1)
+		{
+			line[0].position = (sf::Vector2f)ClickBuffer[0];
+			line[1].position = (sf::Vector2f)sf::Mouse::getPosition(window);
+			line[2].position = (sf::Vector2f)sf::Mouse::getPosition(window);
+			window.draw(line, 2, sf::Lines);
+		}
+		else if (ClickBuffer.size() >= 2)
+		{
+			line[0].position = (sf::Vector2f)ClickBuffer[0];
+			line[1].position = (sf::Vector2f)ClickBuffer[1];
+			line[2].position = (sf::Vector2f)sf::Mouse::getPosition(window);
+			window.draw(line, 3, sf::LineStrip);
 		}
 
 		window.display();
