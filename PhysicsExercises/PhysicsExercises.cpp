@@ -430,6 +430,156 @@ void TriCutter()
 	return;
 }
 
+
+//-----------------------
+// EX 003.1 | NOTE: Unfinished, managed to get capsule rendering working but couldnt get the math part done before needing to leave to prepare for the Covid Lockdown
+//-----------------------
+
+class Capsule 
+{
+public:
+	sf::Vector2f m_firstpoint, m_secondpoint;
+	float m_radius;
+	Capsule(sf::Vector2f _firstpoint, sf::Vector2f _secondpoint, float _radius)
+	{
+		m_firstpoint = _firstpoint;
+		m_secondpoint = _secondpoint;
+		m_radius = _radius;
+	}
+	void Draw(sf::RenderWindow& _window)
+	{
+		sf::Vertex vertexArr[4];
+		m_firstcircle.setPosition(m_firstpoint);
+		m_firstcircle.setOrigin(sf::Vector2f(m_radius, m_radius));
+		m_secondcircle.setPosition(m_secondpoint);
+		m_secondcircle.setOrigin(sf::Vector2f(m_radius, m_radius));
+		m_firstcircle.setRadius(m_radius);
+		m_secondcircle.setRadius(m_radius);
+
+		m_rect.setSize(sf::Vector2f(CVector::Magnitude(CVector::Vector3{ (m_secondpoint - m_firstpoint).x, (m_secondpoint - m_firstpoint).y, 0 }), m_radius * 2));
+		m_rect.setOrigin(m_rect.getSize()/2.0f);
+		m_rect.setPosition(m_firstpoint + (m_secondpoint - m_firstpoint) * 0.5f);
+		
+		
+		
+		m_rect.setRotation(CVector::Angle(CVector::Vector3{ (m_secondpoint - m_firstpoint).x, (m_secondpoint - m_firstpoint).y, 0 }));
+
+		_window.draw(m_firstcircle);
+		_window.draw(m_secondcircle);
+		_window.draw(m_rect);
+	}
+private:
+	sf::CircleShape m_firstcircle, m_secondcircle;
+	sf::RectangleShape m_rect;
+	
+};
+
+CVector::Vector3 ClosestPointOnLineSegment(CVector::Vector3 _start, CVector::Vector3 _end, CVector::Vector3 _point)
+{
+	CVector::Vector3 linesegment = _end - _start;
+	float t = CVector::Dot(_point - _start, linesegment) / CVector::Dot(linesegment, linesegment);
+	return _start + (linesegment * t);
+}
+
+void GetLineBetweenCapsules(const Capsule& _first, const Capsule& _second, sf::VertexArray _OUT_line)
+{
+	CVector::Vector3 a, b, c, d, best_a, best_b;
+	a = CVector::ToVector3(_first.m_firstpoint);
+	b = CVector::ToVector3(_first.m_secondpoint);
+	c = CVector::ToVector3(_second.m_firstpoint);
+	d = CVector::ToVector3(_second.m_secondpoint);
+
+
+
+
+
+}
+
+void CapsuleProgram()
+{
+	//window
+	sf::RenderWindow window(sf::VideoMode(800, 800), "Nerys Thamm Capsule Program", sf::Style::Titlebar);
+	window.setFramerateLimit(60);
+
+	std::vector<sf::Vector2i> ClickBuffer;	//Buffer of click input positions
+	Capsule* firstcapsule = nullptr;
+	Capsule* secondcapsule = nullptr;
+
+
+	sf::Vertex line[3];
+
+	//program loop
+	while (window.isOpen())
+	{
+
+		window.clear();
+
+		sf::Event event;
+		while (window.pollEvent(event))
+		{
+			if (event.type == sf::Event::Closed)
+				window.close();
+			switch (event.type)
+			{
+			case sf::Event::MouseButtonPressed:
+				ClickBuffer.push_back(sf::Mouse::getPosition(window)); //Add clicks to buffer
+				if (ClickBuffer.size() == 3 && firstcapsule == nullptr)
+				{
+					firstcapsule = new Capsule((sf::Vector2f)ClickBuffer[0], (sf::Vector2f)ClickBuffer[2], CVector::Magnitude(CVector::Vector3{ ((sf::Vector2f)(ClickBuffer[1] - ClickBuffer[0])).x, ((sf::Vector2f)(ClickBuffer[1] - ClickBuffer[0])).y, 0 }));
+					ClickBuffer.clear();
+				}
+				else if (ClickBuffer.size() == 3 && secondcapsule == nullptr)
+				{
+					secondcapsule = new Capsule((sf::Vector2f)ClickBuffer[0], (sf::Vector2f)ClickBuffer[2], CVector::Magnitude(CVector::Vector3{ ((sf::Vector2f)(ClickBuffer[1] - ClickBuffer[0])).x, ((sf::Vector2f)(ClickBuffer[1] - ClickBuffer[0])).y, 0 }));
+					ClickBuffer.clear();
+				}
+				else if (ClickBuffer.size() > 3)
+				{
+					ClickBuffer.clear();
+				}
+
+				break;
+			case sf::Event::KeyPressed:
+
+				switch (event.key.code)
+				{
+				
+
+				default:
+					window.close();
+					break;
+				}
+			default:
+				break;
+			}
+		}
+		//RENDER
+		window.clear();
+
+		if (firstcapsule != nullptr)
+		{
+			firstcapsule->Draw(window);
+		}
+		if (secondcapsule != nullptr)
+		{
+			secondcapsule->Draw(window);
+		}
+
+		if (ClickBuffer.size() == 1)
+		{
+			line[0].position = (sf::Vector2f)ClickBuffer[0];
+			line[1].position = (sf::Vector2f)sf::Mouse::getPosition(window);
+			line[2].position = (sf::Vector2f)sf::Mouse::getPosition(window);
+			window.draw(line, 2, sf::Lines);
+		}
+		
+
+		window.display();
+	}
+
+	return;
+}
+
 //-----------------------
 //Main loop, has Menu
 //-----------------------
@@ -446,7 +596,7 @@ int main()
 #endif
 
 		std::string input;
-		std::cout << "Please input the Exercise number you would like to run\nAvailable Exercises are:\n[001.1] [001.2] [001.3] [001.4] [001.5]\nOr input [exit] to Close the program:" << std::endl;
+		std::cout << "Please input the Exercise number you would like to run\nAvailable Exercises are:\n[001.1] [001.2] [001.3] [001.4] [001.5] [003.1]\nOr input [exit] to Close the program:" << std::endl;
 		std::cin >> input;
 		std::cin.ignore();
 		if (input == "exit")
@@ -475,6 +625,10 @@ int main()
 		else if (input == "001.5")
 		{
 			TriCutter();
+		}
+		else if (input == "003.1")
+		{
+			CapsuleProgram();
 		}
 		else
 		{

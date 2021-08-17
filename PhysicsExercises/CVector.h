@@ -2,6 +2,11 @@
 #include <cmath>
 #include <iostream>
 #include <string>
+#include <SFML/System.hpp>
+#include <SFML/Window.hpp>
+#include <SFML/Graphics.hpp>
+#include <SFML/Network.hpp>
+#include <SFML/Audio.hpp>
 class CVector
 {
 public:
@@ -71,6 +76,9 @@ public:
 	static Vector3 CrossProduct(Vector3 _a, Vector3 _b);
 	static float Magnitude(Vector3 _vec3);
 	static std::string Stringify(Vector3 _vec3);
+	static double Angle(Vector3 _vec3);
+	static sf::Vector2f ToVector2f(Vector3 _vec3);
+	static Vector3 ToVector3(sf::Vector2f _vec2f);
 
 };
 
