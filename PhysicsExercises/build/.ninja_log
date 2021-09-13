@@ -1,0 +1,7 @@
+# ninja log v5
+0	373	1629113528703621796	CMakeFiles/PhysicsExercises.dir/CVector.cpp.o	dbb209f1bc67aaae
+0	1077	1629113529406948511	CMakeFiles/PhysicsExercises.dir/PhysicsExercises.cpp.o	2c4e46b38bef74c2
+1077	1147	1629113529473614551	PhysicsExercises	a06f50d826716a33
+1	714	1631506918797690207	CMakeFiles/PhysicsExercises.dir/CVector.cpp.o	dbb209f1bc67aaae
+1	1123	1631506919207686615	CMakeFiles/PhysicsExercises.dir/PhysicsExercises.cpp.o	2c4e46b38bef74c2
+1123	1290	1631506919374351822	PhysicsExercises	a06f50d826716a33

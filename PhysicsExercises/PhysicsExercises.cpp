@@ -10,178 +10,18 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Network.hpp>
 #include <SFML/Audio.hpp>
+#include <cstdarg>
 
-//-----------------------
-// EX 001.1
-//-----------------------
-void LagrangeTest()
-{
-	//Example Vectors
-	std::vector<CVector::Vector3> Aexamples = {
-		CVector::Vector3{1.0f, 2.0f, 3.0f},
-		CVector::Vector3{5.0f, 3.0f, 6.0f},
-		CVector::Vector3{2.0f, 4.0f, 7.0f},
-	};
-	std::vector<CVector::Vector3> Bexamples = {
-		CVector::Vector3{2.0f, 3.0f, 1.0f},
-		CVector::Vector3{2.0f, 6.0f, 3.0f},
-		CVector::Vector3{3.0f, 3.0f, 5.0f},
-	};
-	std::vector<CVector::Vector3> Cexamples = {
-		CVector::Vector3{3.0f, 1.0f, 2.0f},
-		CVector::Vector3{7.0f, 5.0f, 8.0f},
-		CVector::Vector3{2.0f, 2.0f, 6.0f},
-	};
+////////////////////////////////    11
+////////////////////////////////  1111
+////////////////////////////////    11
+////////////////////////////////    11
+////////////////////////////////  111l11
+////////////////////////////////////////////////////////////////////////////////////////////////
+// WEEK 4 EX 1: Point In Triangle Application
+////////////////////////////////////////////////////////////////////////////////////////////////
 
-	//Check that the provided examples are valid
-	if (Aexamples.size() != Bexamples.size() || Bexamples.size() != Cexamples.size())
-	{
-		std::cout << "Examples not the same size!" << std::endl;
-		return;
-	}
-
-	//For each provided set of Example vectors
-	for (int i = 0; i < Aexamples.size(); i++)
-	{
-		//Print the vectors
-		std::cout << "Vector A: " << CVector::Stringify(Aexamples[i]) << std::endl;
-		std::cout << "Vector B: " << CVector::Stringify(Bexamples[i]) << std::endl;
-		std::cout << "Vector C: " << CVector::Stringify(Cexamples[i]) << std::endl;
-
-		//Print the formula
-		std::cout << "Formula:  A x (B x C) = (A DOT C)B -(A DOT B)C" << std::endl;
-
-		//Calculate the left hand side
-		CVector::Vector3 lhs = CVector::CrossProduct(Aexamples[i], CVector::CrossProduct(Bexamples[i], Cexamples[i]));
-
-		//Print the left hand side
-		std::cout << "A x (B x C) = " << CVector::Stringify(lhs) << std::endl;
-
-		//Calculate the right hand side
-		CVector::Vector3 rhs = (Bexamples[i] * CVector::Dot(Aexamples[i], Cexamples[i])) - (Cexamples[i] * CVector::Dot(Aexamples[i], Bexamples[i]));
-
-		//Print the right hand side
-		std::cout << "(A DOT C)B -(A DOT B)C = " << CVector::Stringify(rhs) << std::endl
-				  << std::endl
-				  << std::endl;
-	}
-}
-
-//-----------------------
-// EX 001.2
-//-----------------------
-
-enum PlanePosition
-{
-	ON_PLANE,
-	INFRONT,
-	BEHIND,
-};
-
-PlanePosition PointPlaneTest(CVector::Vector3 _planepos, CVector::Vector3 _planenormal, CVector::Vector3 _pointpos)
-{
-
-	if (CVector::Dot(_planepos - _pointpos, _planenormal) == 0) //If the vector between the plane and point is the same direction as the plane normal its on the plane
-	{
-		std::cout << "ON_PLANE" << std::endl;
-		return PlanePosition::ON_PLANE;
-	}
-	else if (CVector::Dot(_planepos - _pointpos, _planenormal) > 0) //If its greater than zero its behind the plane
-	{
-		std::cout << "BEHIND" << std::endl;
-		return PlanePosition::BEHIND;
-	}
-	else //If its less than zero its in front of the plane
-	{
-		std::cout << "INFRONT" << std::endl;
-		return PlanePosition::INFRONT;
-	}
-}
-
-//Function for getting a Vector3 input from the console
-CVector::Vector3 InputVector3(std::string _prompttext)
-{
-	CVector::Vector3 output;
-	std::cout << _prompttext << "[In format x y z (seperated by spaces)]:" << std::endl;
-	std::string temp;
-	std::cin.clear();
-	std::getline(std::cin, temp);
-	std::stringstream stream(temp);
-	stream >> output.x;
-	stream >> output.y;
-	stream >> output.z;
-	return output;
-}
-
-//-----------------------
-// EX 001.3
-//-----------------------
-
-bool LinePlaneTest(CVector::Vector3 _planepos, CVector::Vector3 _planenormal, CVector::Vector3 _firstpointpos, CVector::Vector3 _secondpointpos)
-{
-
-	CVector::Vector3 line = _firstpointpos - _secondpointpos;
-
-	float d = CVector::Dot((_planepos - _firstpointpos), _planenormal) / CVector::Dot(line, _planenormal);
-
-	if (!CVector::Dot(_planenormal, line)) //If the line runs parallel to the plane do not collide
-	{
-		return false;
-	}
-
-	CVector::Vector3 p = _firstpointpos + (line * d);
-
-	float x = CVector::Dot(_secondpointpos - _firstpointpos, p - _firstpointpos);
-
-	if (x > 0 && x < (CVector::Magnitude(line) * CVector::Magnitude(line))) //If the collision is within the line segment
-	{
-		return true;
-	}
-
-	return false;
-}
-
-//Overload func that also provides a reference parameter which it populates with the collision position
-bool LinePlaneTest(CVector::Vector3 _planepos, CVector::Vector3 _planenormal, CVector::Vector3 _firstpointpos, CVector::Vector3 _secondpointpos, CVector::Vector3 &_OUTpointofintersection)
-{
-
-	CVector::Vector3 line = _firstpointpos - _secondpointpos;
-
-	float d = CVector::Dot((_planepos - _firstpointpos), _planenormal) / CVector::Dot(line, _planenormal);
-
-	if (!CVector::Dot(_planenormal, line))
-	{
-		return false;
-	}
-
-	CVector::Vector3 p = _firstpointpos + (line * d);
-
-	float x = CVector::Dot(_secondpointpos - _firstpointpos, p - _firstpointpos);
-
-	if (x > 0 && x < (CVector::Magnitude(line) * CVector::Magnitude(line)))
-	{
-		_OUTpointofintersection = _firstpointpos + line * d; //output the point where the intersection occurs to the reference param
-		return true;
-	}
-
-	return false;
-}
-
-//-----------------------
-// EX 001.4
-//-----------------------
-
-bool TriPlaneTest(CVector::Vector3 _planepos, CVector::Vector3 _planenormal, CVector::Vector3 _firstpointpos, CVector::Vector3 _secondpointpos, CVector::Vector3 _thirdpointpos)
-{
-	//Does a line intersection test for each line in the triangle
-	bool intersects = (LinePlaneTest(_planepos, _planenormal, _firstpointpos, _secondpointpos) || LinePlaneTest(_planepos, _planenormal, _firstpointpos, _thirdpointpos) || LinePlaneTest(_planepos, _planenormal, _thirdpointpos, _secondpointpos));
-	return intersects;
-}
-
-//-----------------------
-// EX 001.5
-//-----------------------
-
+//Makes a Vertex array of a triangle from Points
 sf::VertexArray MakeTriangle(sf::Vector2f PointA, sf::Vector2f PointB, sf::Vector2f PointC, sf::Color Color)
 {
 	// create an array of 3 vertices that define a triangle primitive
@@ -200,94 +40,17 @@ sf::VertexArray MakeTriangle(sf::Vector2f PointA, sf::Vector2f PointB, sf::Vecto
 	return triangle;
 }
 
-//OBSOLETE: I originally tried to split the triangle into a tri and a quad then split the quad, which was not a good way of doing it.
-void SplitQuad(sf::VertexArray _quad, sf::VertexArray &_triA, sf::VertexArray &_triB)
-{
-	if (_quad.getVertexCount() != 4)
-	{
-		return;
-	}
-	_triA[0] = _quad[3];
-	_triA[1] = _quad[0];
-	_triA[2] = _quad[1];
-
-	_triB[0] = _quad[3];
-	_triB[1] = _quad[1];
-	_triB[2] = _quad[2];
-	return;
-}
-
-enum PlacementState
-{
-	NONE,
-	PLACINGTRI,
-	PLACINGLINE
-};
-
-//Converts SFML vectors to CVector3 to check line/line collisions
-bool IsLineCollidingWithLine(sf::Vector2f _originA, sf::Vector2f _endA, sf::Vector2f _originB, sf::Vector2f _endB)
-{
-	CVector::Vector3 planenormal, planeposition, lineorigin, lineend;
-	lineorigin.x = _originB.x;
-	lineorigin.y = _originB.y;
-	lineend.x = _endB.x;
-	lineend.y = _endB.y;
-
-	sf::Vector2f line = _endA - _originA;
-	CVector::Vector3 convertedline;
-	convertedline.x = line.x;
-	convertedline.y = line.y;
-
-	CVector::Vector3 znormal;
-	znormal.z = 1.f;
-
-	planeposition.x = _originA.x;
-	planeposition.y = _originA.y;
-
-	planenormal = CVector::CrossProduct(convertedline, znormal);
-
-	return LinePlaneTest(planeposition, planenormal, lineorigin, lineend);
-}
-
-//Converts SFML vectors to CVector3 to check line/line collisions | OVERRIDE: provides reference parameter it populates with the collision point
-bool IsLineCollidingWithLine(sf::Vector2f _originA, sf::Vector2f _endA, sf::Vector2f _originB, sf::Vector2f _endB, sf::Vector2f &_OUTpointofintersection)
-{
-	CVector::Vector3 planenormal, planeposition, lineorigin, lineend;
-	lineorigin.x = _originB.x;
-	lineorigin.y = _originB.y;
-	lineend.x = _endB.x;
-	lineend.y = _endB.y;
-
-	sf::Vector2f line = _endA - _originA;
-	CVector::Vector3 convertedline;
-	convertedline.x = line.x;
-	convertedline.y = line.y;
-
-	CVector::Vector3 znormal;
-	znormal.z = 1.f;
-
-	planeposition.x = _originA.x;
-	planeposition.y = _originA.y;
-
-	planenormal = CVector::CrossProduct(convertedline, znormal);
-
-	CVector::Vector3 intersection;
-	bool iscolliding = LinePlaneTest(planeposition, planenormal, lineorigin, lineend, intersection);
-	_OUTpointofintersection.x = intersection.x;
-	_OUTpointofintersection.y = intersection.y;
-	return iscolliding;
-}
-
-//SFML graphical program
-void TriCutter()
+//SFML loop
+void PointInTriangle()
 {
 	//window
-	sf::RenderWindow window(sf::VideoMode(300, 300), "Nerys Thamm Triangle Cutter", sf::Style::Titlebar);
+	sf::RenderWindow window(sf::VideoMode(300, 300), "Nerys Thamm point in triangle tester", sf::Style::Titlebar);
 	window.setFramerateLimit(60);
 
 	std::vector<sf::VertexArray> Triangles; //Vector of all triangles
-	sf::VertexArray CachedTri;				//Cached triangle to restore on key press
-	std::vector<sf::Vector2i> ClickBuffer;	//Buffer of click input positions
+	sf::Vector2f *Point = nullptr;
+	bool isInsideTriangle = false;
+	std::vector<sf::Vector2i> ClickBuffer; //Buffer of click input positions
 
 	sf::Vertex line[3];
 
@@ -309,67 +72,29 @@ void TriCutter()
 				if (ClickBuffer.size() == 3 && Triangles.size() == 0)  //Make a triangle if there isnt already one, and there have been three clicks
 				{
 					Triangles.push_back(MakeTriangle((sf::Vector2f)ClickBuffer[0], (sf::Vector2f)ClickBuffer[1], (sf::Vector2f)ClickBuffer[2], sf::Color::Red));
-					CachedTri = Triangles[0];
+
 					ClickBuffer.clear();
 				}
-				else if (Triangles.size() > 0 && ClickBuffer.size() == 2) //If a triangle exists, make a line and cut the triangle along it if there have been two clicks
+				else if (ClickBuffer.size() == 1 && Triangles.size() == 1) //If there is one triangle and one click in the buffer
 				{
-
-					bool ABhit = false, BChit = false, CAhit = false;
-					sf::Vector2f ABintersect, BCintersect, CAintersect;
-
-					//Check collisions with the sides of the triangle
-					ABhit = IsLineCollidingWithLine(Triangles.front()[0].position, Triangles.front()[1].position, (sf::Vector2f)ClickBuffer[0], (sf::Vector2f)ClickBuffer[1], ABintersect);
-					BChit = IsLineCollidingWithLine(Triangles.front()[1].position, Triangles.front()[2].position, (sf::Vector2f)ClickBuffer[0], (sf::Vector2f)ClickBuffer[1], BCintersect);
-					CAhit = IsLineCollidingWithLine(Triangles.front()[2].position, Triangles.front()[0].position, (sf::Vector2f)ClickBuffer[0], (sf::Vector2f)ClickBuffer[1], CAintersect);
-
-					//Slice the triangle into three new ones
-					if (ABhit && CAhit)
+					Point = new sf::Vector2f((sf::Vector2f)ClickBuffer[0]);											   //Store the point where the click occurred
+					CVector::Vector3 vec1 = CVector::ToVector3(Triangles[0][0].position) - CVector::ToVector3(*Point); //Vector from Click to first corner
+					CVector::Vector3 vec2 = CVector::ToVector3(Triangles[0][1].position) - CVector::ToVector3(*Point); //Vector from Click to second corner
+					CVector::Vector3 vec3 = CVector::ToVector3(Triangles[0][2].position) - CVector::ToVector3(*Point); //Vector from Click to third corner
+					//Store the Sum of angles between the three vectors
+					float f = (CVector::AngleBetween(vec1, vec2) +
+							   CVector::AngleBetween(vec2, vec3) +
+							   CVector::AngleBetween(vec3, vec1));
+					if ((f < 365 && f > 355) || (f > -365 && f < -355)) //if they add up to ~360
 					{
-						sf::VertexArray triA, triB, triC;
-
-						triA = MakeTriangle(Triangles.front()[0].position, ABintersect, CAintersect, sf::Color::Green);
-
-						triB = MakeTriangle(Triangles.front()[1].position, ABintersect, CAintersect, sf::Color::Blue);
-
-						triC = MakeTriangle(Triangles.front()[1].position, Triangles.front()[2].position, CAintersect, sf::Color::Yellow);
-
-						Triangles.push_back(triA);
-						Triangles.push_back(triB);
-						Triangles.push_back(triC);
+						isInsideTriangle = true; //The click occured inside the triangle
 					}
-					else if (BChit && CAhit)
+					else
 					{
-						sf::VertexArray triA, triB, triC;
-
-						triA = MakeTriangle(Triangles.front()[2].position, BCintersect, CAintersect, sf::Color::Green);
-
-						triB = MakeTriangle(Triangles.front()[1].position, BCintersect, CAintersect, sf::Color::Blue);
-
-						triC = MakeTriangle(Triangles.front()[0].position, Triangles.front()[1].position, CAintersect, sf::Color::Yellow);
-
-						Triangles.push_back(triA);
-						Triangles.push_back(triB);
-						Triangles.push_back(triC);
+						isInsideTriangle = false; //The click occured outside the triangle
 					}
-					else if (BChit && ABhit)
-					{
-						sf::VertexArray triA, triB, triC;
-
-						triA = MakeTriangle(Triangles.front()[1].position, BCintersect, ABintersect, sf::Color::Green);
-
-						triB = MakeTriangle(Triangles.front()[2].position, BCintersect, ABintersect, sf::Color::Blue);
-
-						triC = MakeTriangle(Triangles.front()[2].position, Triangles.front()[0].position, ABintersect, sf::Color::Yellow);
-
-						Triangles.push_back(triA);
-						Triangles.push_back(triB);
-						Triangles.push_back(triC);
-					}
-
-					ClickBuffer.clear();
 				}
-				else if (ClickBuffer.size() > 2) //Clear the buffer if nothing can be done
+				else if (ClickBuffer.size() > 1 && Triangles.size() >= 1) //Clear the buffer if nothing can be done
 				{
 					ClickBuffer.clear();
 				}
@@ -379,18 +104,10 @@ void TriCutter()
 
 				switch (event.key.code)
 				{
-				case sf::Keyboard::T:
+				case sf::Keyboard::R: //Reset the scene
 					Triangles.clear();
-					break;
-
-				case sf::Keyboard::L:
-
-					Triangles.clear();
-					if (CachedTri.getVertexCount() == 3)
-					{
-						Triangles.push_back(CachedTri);
-					}
-
+					Point = nullptr;
+					ClickBuffer.clear();
 					break;
 
 				default:
@@ -409,7 +126,7 @@ void TriCutter()
 			window.draw(Triangles[i]);
 		}
 
-		if (ClickBuffer.size() == 1)
+		if (ClickBuffer.size() == 1 && Triangles.size() == 0)
 		{
 			line[0].position = (sf::Vector2f)ClickBuffer[0];
 			line[1].position = (sf::Vector2f)sf::Mouse::getPosition(window);
@@ -423,6 +140,14 @@ void TriCutter()
 			line[2].position = (sf::Vector2f)sf::Mouse::getPosition(window);
 			window.draw(line, 3, sf::LineStrip);
 		}
+		if (Point != nullptr)
+		{
+			sf::CircleShape shape(10.0f);
+			shape.setOrigin(sf::Vector2f(shape.getRadius(), shape.getRadius()));
+			shape.setPosition(*Point);
+			shape.setFillColor(isInsideTriangle ? sf::Color::Green : sf::Color::Red);
+			window.draw(shape);
+		}
 
 		window.display();
 	}
@@ -430,81 +155,24 @@ void TriCutter()
 	return;
 }
 
-
-//-----------------------
-// EX 003.1 | NOTE: Unfinished, managed to get capsule rendering working but couldnt get the math part done before needing to leave to prepare for the Covid Lockdown
-//-----------------------
-
-class Capsule 
-{
-public:
-	sf::Vector2f m_firstpoint, m_secondpoint;
-	float m_radius;
-	Capsule(sf::Vector2f _firstpoint, sf::Vector2f _secondpoint, float _radius)
-	{
-		m_firstpoint = _firstpoint;
-		m_secondpoint = _secondpoint;
-		m_radius = _radius;
-	}
-	void Draw(sf::RenderWindow& _window)
-	{
-		sf::Vertex vertexArr[4];
-		m_firstcircle.setPosition(m_firstpoint);
-		m_firstcircle.setOrigin(sf::Vector2f(m_radius, m_radius));
-		m_secondcircle.setPosition(m_secondpoint);
-		m_secondcircle.setOrigin(sf::Vector2f(m_radius, m_radius));
-		m_firstcircle.setRadius(m_radius);
-		m_secondcircle.setRadius(m_radius);
-
-		m_rect.setSize(sf::Vector2f(CVector::Magnitude(CVector::Vector3{ (m_secondpoint - m_firstpoint).x, (m_secondpoint - m_firstpoint).y, 0 }), m_radius * 2));
-		m_rect.setOrigin(m_rect.getSize()/2.0f);
-		m_rect.setPosition(m_firstpoint + (m_secondpoint - m_firstpoint) * 0.5f);
-		
-		
-		
-		m_rect.setRotation(CVector::Angle(CVector::Vector3{ (m_secondpoint - m_firstpoint).x, (m_secondpoint - m_firstpoint).y, 0 }));
-
-		_window.draw(m_firstcircle);
-		_window.draw(m_secondcircle);
-		_window.draw(m_rect);
-	}
-private:
-	sf::CircleShape m_firstcircle, m_secondcircle;
-	sf::RectangleShape m_rect;
-	
-};
-
-CVector::Vector3 ClosestPointOnLineSegment(CVector::Vector3 _start, CVector::Vector3 _end, CVector::Vector3 _point)
-{
-	CVector::Vector3 linesegment = _end - _start;
-	float t = CVector::Dot(_point - _start, linesegment) / CVector::Dot(linesegment, linesegment);
-	return _start + (linesegment * t);
-}
-
-void GetLineBetweenCapsules(const Capsule& _first, const Capsule& _second, sf::VertexArray _OUT_line)
-{
-	CVector::Vector3 a, b, c, d, best_a, best_b;
-	a = CVector::ToVector3(_first.m_firstpoint);
-	b = CVector::ToVector3(_first.m_secondpoint);
-	c = CVector::ToVector3(_second.m_firstpoint);
-	d = CVector::ToVector3(_second.m_secondpoint);
-
-
-
-
-
-}
-
-void CapsuleProgram()
+////////////////////////////////   22
+////////////////////////////////  2  2
+////////////////////////////////    2
+////////////////////////////////   2
+////////////////////////////////  2222
+////////////////////////////////////////////////////////////////////////////////////////////////
+// WEEK 4 EX 2: Barycentric Coordinate Calculator
+////////////////////////////////////////////////////////////////////////////////////////////////
+void PointInTriangleBarycentric()
 {
 	//window
-	sf::RenderWindow window(sf::VideoMode(800, 800), "Nerys Thamm Capsule Program", sf::Style::Titlebar);
+	sf::RenderWindow window(sf::VideoMode(300, 300), "Nerys Thamm Barycentric Point in triangle tester", sf::Style::Titlebar);
 	window.setFramerateLimit(60);
 
-	std::vector<sf::Vector2i> ClickBuffer;	//Buffer of click input positions
-	Capsule* firstcapsule = nullptr;
-	Capsule* secondcapsule = nullptr;
-
+	std::vector<sf::VertexArray> Triangles; //Vector of all triangles
+	sf::Vector2f *Point = nullptr;
+	bool isInsideTriangle = false;
+	std::vector<sf::Vector2i> ClickBuffer; //Buffer of click input positions
 
 	sf::Vertex line[3];
 
@@ -523,17 +191,19 @@ void CapsuleProgram()
 			{
 			case sf::Event::MouseButtonPressed:
 				ClickBuffer.push_back(sf::Mouse::getPosition(window)); //Add clicks to buffer
-				if (ClickBuffer.size() == 3 && firstcapsule == nullptr)
+				if (ClickBuffer.size() == 3 && Triangles.size() == 0)  //Make a triangle if there isnt already one, and there have been three clicks
 				{
-					firstcapsule = new Capsule((sf::Vector2f)ClickBuffer[0], (sf::Vector2f)ClickBuffer[2], CVector::Magnitude(CVector::Vector3{ ((sf::Vector2f)(ClickBuffer[1] - ClickBuffer[0])).x, ((sf::Vector2f)(ClickBuffer[1] - ClickBuffer[0])).y, 0 }));
+					Triangles.push_back(MakeTriangle((sf::Vector2f)ClickBuffer[0], (sf::Vector2f)ClickBuffer[1], (sf::Vector2f)ClickBuffer[2], sf::Color::Red));
+
 					ClickBuffer.clear();
 				}
-				else if (ClickBuffer.size() == 3 && secondcapsule == nullptr)
+				else if (ClickBuffer.size() == 1 && Triangles.size() == 1)
 				{
-					secondcapsule = new Capsule((sf::Vector2f)ClickBuffer[0], (sf::Vector2f)ClickBuffer[2], CVector::Magnitude(CVector::Vector3{ ((sf::Vector2f)(ClickBuffer[1] - ClickBuffer[0])).x, ((sf::Vector2f)(ClickBuffer[1] - ClickBuffer[0])).y, 0 }));
-					ClickBuffer.clear();
+					Point = new sf::Vector2f((sf::Vector2f)ClickBuffer[0]);
+
+					isInsideTriangle = CVector::TestPointInTriBarycentric(CVector::ToVector3(*Point), CVector::ToVector3(Triangles[0][0].position), CVector::ToVector3(Triangles[0][1].position), CVector::ToVector3(Triangles[0][2].position)); //Use Barycentric coordinates to test if it is inside the triangle
 				}
-				else if (ClickBuffer.size() > 3)
+				else if (ClickBuffer.size() > 1 && Triangles.size() >= 1) //Clear the buffer if nothing can be done
 				{
 					ClickBuffer.clear();
 				}
@@ -543,7 +213,11 @@ void CapsuleProgram()
 
 				switch (event.key.code)
 				{
-				
+				case sf::Keyboard::R: //Reset the scene
+					Triangles.clear();
+					Point = nullptr;
+					ClickBuffer.clear();
+					break;
 
 				default:
 					window.close();
@@ -556,28 +230,222 @@ void CapsuleProgram()
 		//RENDER
 		window.clear();
 
-		if (firstcapsule != nullptr)
+		for (int i = 0; i < Triangles.size(); i++)
 		{
-			firstcapsule->Draw(window);
-		}
-		if (secondcapsule != nullptr)
-		{
-			secondcapsule->Draw(window);
+			window.draw(Triangles[i]);
 		}
 
-		if (ClickBuffer.size() == 1)
+		if (ClickBuffer.size() == 1 && Triangles.size() == 0)
 		{
 			line[0].position = (sf::Vector2f)ClickBuffer[0];
 			line[1].position = (sf::Vector2f)sf::Mouse::getPosition(window);
 			line[2].position = (sf::Vector2f)sf::Mouse::getPosition(window);
 			window.draw(line, 2, sf::Lines);
 		}
-		
+		else if (ClickBuffer.size() >= 2)
+		{
+			line[0].position = (sf::Vector2f)ClickBuffer[0];
+			line[1].position = (sf::Vector2f)ClickBuffer[1];
+			line[2].position = (sf::Vector2f)sf::Mouse::getPosition(window);
+			window.draw(line, 3, sf::LineStrip);
+		}
+		if (Point != nullptr)
+		{
+			sf::CircleShape shape(10.0f);
+			shape.setOrigin(sf::Vector2f(shape.getRadius(), shape.getRadius()));
+			shape.setPosition(*Point);
+			shape.setFillColor(isInsideTriangle ? sf::Color::Green : sf::Color::Red);
+			window.draw(shape);
+		}
 
 		window.display();
 	}
 
 	return;
+}
+
+////////////////////////////////  333
+////////////////////////////////     3
+////////////////////////////////   33
+////////////////////////////////     3
+////////////////////////////////  333
+///////////////////////////////////////////////////////////////
+// WEEK 4 EX 3: Seperating Axis Theorem
+///////////////////////////////////////////////////////////////
+
+//Gets all axes adjacent to polygon edges
+std::vector<CVector::Vector3> GetAxes(sf::VertexArray _vertices)
+{
+	std::vector<CVector::Vector3> out;
+	for (int i = 0; i < _vertices.getVertexCount(); i++) //Get edges from vertex array
+	{
+		out.push_back(CVector::ToVector3(_vertices[i].position - _vertices[i + 1 == _vertices.getVertexCount() ? 0 : i + 1].position));
+	}
+
+	for (auto edge : out) //Get adjacent vector to edges
+	{
+		edge = CVector::Vector3{edge.y, -edge.x, 0.0f};
+	}
+	return out;
+}
+
+//Returns a VertexArray containing a polygon
+sf::VertexArray MakePolygon(std::vector<sf::Vector2i> _vertices)
+{
+	sf::VertexArray poly(sf::TrianglesFan, _vertices.size());
+	for (int i = 0; i < _vertices.size(); i++)
+	{
+		poly[i].position = (sf::Vector2f)_vertices[i];
+	}
+	return poly;
+}
+
+typedef std::tuple<float, float> Projection; //Stores the Min and Max projection value
+
+//Returns a projection of the polygon onto the provided plane
+Projection ProjectOnAxis(const sf::VertexArray &_vertices, const CVector::Vector3 &_axis)
+{
+	float min = std::numeric_limits<float>::infinity();
+	float max = -std::numeric_limits<float>::infinity();
+	for (int i = 0; i < _vertices.getVertexCount(); i++) //For every vertex
+	{
+		float proj = CVector::Dot(CVector::ToVector3(_vertices[i].position), _axis); //Get the dot product of the vertex and axis
+		if (proj < min)																 //If lower than current min
+			min = proj;																 //Set as min
+		if (proj > max)																 //If higher than current max
+			max = proj;																 //Set as max
+	}
+	return Projection(min, max); //Return min and max values
+}
+
+//Checks if two convex polygons overlap
+bool IsOverlapping(sf::VertexArray _a, sf::VertexArray _b)
+{
+	std::vector<CVector::Vector3> axesA = GetAxes(_a); //Get the Axes for each shape
+	std::vector<CVector::Vector3> axesB = GetAxes(_b);
+	//Define a Lambda to compare overlap between projections
+	auto overlap = [](Projection a, Projection b) -> bool
+	{ return std::get<0>(a) <= std::get<1>(b) && std::get<1>(a) >= std::get<0>(b); };
+
+	//For each shape, project both shapes onto every axis, and check if they overlap
+	for (auto axis : axesA)
+	{
+		if (!overlap(ProjectOnAxis(_a, axis), ProjectOnAxis(_b, axis)))
+			return false; //If there is no overlap, the shapes do not intersect
+	}
+	for (auto axis : axesB)
+	{
+		if (!overlap(ProjectOnAxis(_a, axis), ProjectOnAxis(_b, axis)))
+			return false; //If there is no overlap, the shapes do not intersect
+	}
+	return true; //If every test results in overlap, then the shapes must intersect
+}
+
+//SFML loop
+void SeperatingAxisTheorem()
+{
+	//window
+	sf::RenderWindow window(sf::VideoMode(300, 300), "Nerys Thamm Triangle Cutter", sf::Style::Titlebar);
+	window.setFramerateLimit(60);
+
+	std::vector<sf::VertexArray> Polygons; //Vector of all triangles
+
+	std::vector<sf::Vector2i> ClickBuffer; //Buffer of click input positions
+
+	bool overlap = false;
+
+	//program loop
+	while (window.isOpen())
+	{
+
+		window.clear();
+
+		sf::Event event;
+		while (window.pollEvent(event))
+		{
+			if (event.type == sf::Event::Closed)
+				window.close();
+			switch (event.type)
+			{
+			case sf::Event::MouseButtonPressed:
+				ClickBuffer.push_back(sf::Mouse::getPosition(window)); //Add clicks to buffer
+				if (Polygons.size() >= 2)							   //If two polygons have been made nothing further can be done
+					ClickBuffer.clear();
+				break;
+			case sf::Event::KeyPressed:
+
+				switch (event.key.code)
+				{
+				case sf::Keyboard::R: //Reset the Scene
+					Polygons.clear();
+					overlap = false;
+					ClickBuffer.clear();
+					break;
+				case sf::Keyboard::P:			//Place a polygon
+					if (ClickBuffer.size() > 2) //At least three vertices are needed to make a polygon
+					{
+						Polygons.push_back(MakePolygon(ClickBuffer));
+						if (Polygons.size() == 2) //If there are two polygons, check if they overlap
+						{
+							overlap = IsOverlapping(Polygons[0], Polygons[1]);
+						}
+						ClickBuffer.clear();
+					}
+					break;
+				default:
+					window.close();
+					break;
+				}
+			default:
+				break;
+			}
+		}
+		//RENDER
+		window.clear();
+		sf::Color colorlist[] = {sf::Color::Blue,
+								 sf::Color::Green};
+
+		for (int i = 0; i < Polygons.size(); i++) //Draw the polygons
+		{
+			for (int j = 0; j < Polygons[i].getVertexCount(); j++)
+			{
+				Polygons[i][j].color = (overlap ? sf::Color::Red : colorlist[i]); //Make the polygons red if they overlap
+			}
+
+			window.draw(Polygons[i]);
+		}
+		sf::Vertex line[ClickBuffer.size() + 1];
+		for (int i = 0; i < ClickBuffer.size(); i++)
+		{
+			line[i].position = (sf::Vector2f)ClickBuffer[i];
+		}
+		line[ClickBuffer.size()].position = (sf::Vector2f)sf::Mouse::getPosition(window);
+		window.draw(line, ClickBuffer.size() + 1, sf::LineStrip);
+
+		window.display();
+	}
+
+	return;
+}
+
+////////////////////////////////  4  4
+////////////////////////////////  4  4
+////////////////////////////////  4444
+////////////////////////////////     4
+////////////////////////////////     4
+///////////////////////////////////////////////////////////////
+// WEEK 5 EX 2: Where is the Javelin?
+///////////////////////////////////////////////////////////////
+void Javelin(float _angle, float _speed, float _time, CVector::Vector3 &out_Pos, float &out_Angle)
+{
+	const float GRAVITY = 9.80665f; //Gravity constant
+	out_Pos = CVector::Vector3{0.0f, 0.0f, 0.0f};
+	CVector::Vector3 startvelocity{_speed * cos(_angle * (M_PI / 180.0f)), _speed * sin(_angle * (M_PI / 180.0f)), 0.0f}; //Start velocity is in the direction of the throw angle with magnitude determined by throw speed
+	out_Pos.x = startvelocity.x * _time;																				  // Distance = Velocity * Time
+	out_Pos.y = (startvelocity.y * _time) - (GRAVITY * (_time * _time) / 2);											  //apply gravity acceleration to initial vertical velocity
+	float currVelocityX = startvelocity.x;
+	float currVelocityY = startvelocity.y - GRAVITY * _time;
+	out_Angle = CVector::Angle(CVector::Vector3{currVelocityX, currVelocityY, 0.0f}); //Angle of the Javelin is in the direction of its velocity
 }
 
 //-----------------------
@@ -596,7 +464,7 @@ int main()
 #endif
 
 		std::string input;
-		std::cout << "Please input the Exercise number you would like to run\nAvailable Exercises are:\n[001.1] [001.2] [001.3] [001.4] [001.5] [003.1]\nOr input [exit] to Close the program:" << std::endl;
+		std::cout << "Please input the Exercise number you would like to run\nAvailable Exercises are:\n[004.1] [004.2] [004.3] [005.2]\nOr input [exit] to Close the program:" << std::endl;
 		std::cin >> input;
 		std::cin.ignore();
 		if (input == "exit")
@@ -604,31 +472,39 @@ int main()
 			running = false;
 			break;
 		}
-		else if (input == "001.1")
+		else if (input == "004.1")
 		{
-			LagrangeTest();
+			PointInTriangle();
 		}
-		else if (input == "001.2")
+		else if (input == "004.2")
 		{
-			PlanePosition p = PointPlaneTest(InputVector3("Plane Position"), InputVector3("Plane Normal"), InputVector3("Point Position"));
+			PointInTriangleBarycentric();
 		}
-		else if (input == "001.3")
+		else if (input == "004.3")
 		{
-			bool result = LinePlaneTest(InputVector3("Plane Position"), InputVector3("Plane Normal"), InputVector3("First point position"), InputVector3("Second point position"));
-			std::cout << (result ? "The Line intersects the plane" : "The Line does not intersect the plane") << std::endl;
+			SeperatingAxisTheorem();
 		}
-		else if (input == "001.4")
+		else if (input == "005.2")
 		{
-			bool result = TriPlaneTest(InputVector3("Plane Position"), InputVector3("Plane Normal"), InputVector3("First point position"), InputVector3("Second point position"), InputVector3("Third point position"));
-			std::cout << (result ? "The Triangle intersects the plane" : "The Triangle does not intersect the plane") << std::endl;
-		}
-		else if (input == "001.5")
-		{
-			TriCutter();
-		}
-		else if (input == "003.1")
-		{
-			CapsuleProgram();
+			std::cout << "Please enter the Javelin throw angle: ";
+			std::string input;
+			std::cin >> input;
+			float inpangle = std::stof(input);
+			std::cout << std::endl
+					  << "Please enter Javelin throw speed: ";
+			input = "";
+			std::cin >> input;
+			float inpspeed = std::stof(input);
+			std::cout << std::endl
+					  << "Please enter Time you would like to calculate: ";
+			input = "";
+			std::cin >> input;
+			float inptime = std::stof(input);
+			float outangle;
+			CVector::Vector3 outvec;
+			Javelin(inpangle, inpspeed, inptime, outvec, outangle);
+			std::cout << std::endl
+					  << "Pos [X: " + std::to_string(outvec.x) + " Y: " + std::to_string(outvec.y) + "] Angle: " + std::to_string(outangle) + "";
 		}
 		else
 		{
