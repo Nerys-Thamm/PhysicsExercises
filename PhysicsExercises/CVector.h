@@ -4,6 +4,9 @@
 #include <iostream>
 #include <string>
 #include <SFML/System.hpp>
+#if _WIN32 || _WIN64
+#define M_PI 3.14159
+#endif
 
 class CVector
 {

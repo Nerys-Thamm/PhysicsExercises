@@ -345,7 +345,7 @@ bool IsOverlapping(sf::VertexArray _a, sf::VertexArray _b)
 void SeperatingAxisTheorem()
 {
 	//window
-	sf::RenderWindow window(sf::VideoMode(300, 300), "Nerys Thamm Triangle Cutter", sf::Style::Titlebar);
+	sf::RenderWindow window(sf::VideoMode(300, 300), "Nerys Thamm Seperating Axis Theorem", sf::Style::Titlebar);
 	window.setFramerateLimit(60);
 
 	std::vector<sf::VertexArray> Polygons; //Vector of all triangles
@@ -414,7 +414,7 @@ void SeperatingAxisTheorem()
 
 			window.draw(Polygons[i]);
 		}
-		sf::Vertex line[ClickBuffer.size() + 1];
+		sf::Vertex line[40/*ClickBuffer.size() + 1*/];
 		for (int i = 0; i < ClickBuffer.size(); i++)
 		{
 			line[i].position = (sf::Vector2f)ClickBuffer[i];
@@ -504,7 +504,7 @@ int main()
 			CVector::Vector3 outvec;
 			Javelin(inpangle, inpspeed, inptime, outvec, outangle);
 			std::cout << std::endl
-					  << "Pos [X: " + std::to_string(outvec.x) + " Y: " + std::to_string(outvec.y) + "] Angle: " + std::to_string(outangle) + "";
+					  << "Pos [X: " + std::to_string(outvec.x) + " Y: " + std::to_string(outvec.y) + "] Angle: " + std::to_string(outangle) + "" << std::endl;
 		}
 		else
 		{
